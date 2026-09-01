@@ -1,0 +1,30 @@
+package LogsAndNotifications;
+
+public enum LogType {
+    GENERAL,
+    INIT,
+    CONFLICT,
+    LOAD_ORDER,
+    SONG,
+    MODS,
+    SV_DML_DMM,
+    SETTINGS,
+    CHECKER,
+    BACKUP,
+    FILE_IO,
+    CHOOSER,
+    EXCEL,
+    PVDB,
+    PROCESS_AND_MEMORY,
+    DB_CONVERTOR,
+    SPRITE_DATABASE,
+    PV_SCRIPT,
+    NOTIFICATION,
+    LYRIC,
+    API_DMA,
+    API_GAME_BANANA,
+    MUSIC_PLAYER,
+    VIDEO_PLAYER,
+    FFMPEG, LANGUAGE,
+
+}
