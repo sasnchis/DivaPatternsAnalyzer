@@ -11,6 +11,7 @@ public class Starter {
         String targetFile = "C:\\Users\\sasnc\\IdeaProjects\\DivaPatternsAnalyzer\\src\\main\\resources\\dscfiles\\"; // pv_200000_extreme_1 Gorgon -> _1 changed fly time
 //        String targetFile = "G:\\Games\\DivaMods\\CustomSongs\\Hatsune Creation Myth Holiday\\"; // pv_347_extreme.dsc Hatsune Creation Myth
 //        String targetFile = "G:\\Games\\DivaMods\\Train\\Train Intense\\"; // pv_042_extreme.dsc Intense Extreme
+//        String targetFile = "D:\\SteamLibrary\\steamapps\\common\\Hatsune Miku Project DIVA Mega Mix Plus\\mods\\SnakeMemeMod\\rom\\script\\"; // pv_787_extreme.dsc Make It Shine
         File dscFile = new File(targetFile+"pv_200000_extreme.dsc");
         System.out.println(dscFile.getAbsolutePath());
         try {

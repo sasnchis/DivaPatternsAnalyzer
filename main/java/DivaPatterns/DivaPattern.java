@@ -17,7 +17,7 @@ public enum DivaPattern implements PatternAnalyzer {
             int start = i;
             int end = i;
             for (int j = 0; i + j < notes.size() - 2; j++) {
-                if (start == end && PatternHelper.isChainSlideNote(notes.get(i+j))) break;
+                if (start == end && PatternHelper.isChainSlideNote(notes.get(i + j))) break;
                 if (notes.get(i + j).getBpmPatternToNextAsFlyTime() < (STREAM_MIN_GRID - 0.5)) {
                     if (end - start >= STREAM_MIN_NOTES) { // 6 or more notes!
                         output.add(start);
@@ -54,21 +54,21 @@ public enum DivaPattern implements PatternAnalyzer {
             int start = i;
             int end = i;
             for (int j = 0; i + j < notes.size() - 2; j++) {
-                if (start == end && PatternHelper.isChainSlideNote(notes.get(i+j))) break;
+                if (start == end && PatternHelper.isChainSlideNote(notes.get(i + j))) break;
                 if (notes.get(i + j).getBpmPatternToNextAsFlyTime() < (STREAM_MIN_GRID - 0.5)) {
                     if (end - start >= STREAM_MIN_NOTES) { // 6 or more notes!
                         output.add(start);
-                        output.add(end-1);
-                        i = end-1;
+                        output.add(end - 1);
+                        i = end - 1;
                     }
                     break;
                 } // Checking grid
                 if (PatternHelper.isSameTiming(1.0, notes.get(i + j), notes.get(i + j + 1), notes.get(i + j + 2)) || // if 1/8 in 1/8
                         PatternHelper.isSameTiming(1.5, notes.get(i + j), notes.get(i + j + 1), notes.get(i + j + 2)) || // if 1/8 in 1/12
                         PatternHelper.isSameTiming(2.0, notes.get(i + j), notes.get(i + j + 1), notes.get(i + j + 2)) // if 1/8 in 1/16
-                ){
+                ) {
                     end = i + j + 2;
-                } else{
+                } else {
                     int slideNotesInStream = 0;
                     for (int k = start; k < end; k++) {
                         if (PatternHelper.isSlideNote(notes.get(k)))
@@ -114,26 +114,51 @@ public enum DivaPattern implements PatternAnalyzer {
         return null;
     }),
     _270((notes) -> {
-        return null;
+        ArrayList<Integer> output = new ArrayList<>();
+        for (int i = 0; i < notes.size() - 3; i++) {
+            int start = i;
+            int end = start;
+            for (int k = 0; k + i < notes.size() - 3; k++) {
+                // Check same timing
+                if (!PatternHelper.isSameTiming(1, notes.get(i + k), notes.get(i + k + 1), notes.get(i + k + 2))) {
+                    if (end != start) {
+                        output.add(start);
+                        output.add(end);
+                    }
+                    i = end;
+                    break;
+                }
+                // Check 360 pattern (start from any note)
+                boolean circlePattern = PatternHelper.is270Pattern(notes.get(i + k), notes.get(i + k + 1), notes.get(i + k + 2));
+                if (circlePattern)
+                    end = k + i + 2;
+                else {
+                    if (end != start) {
+                        output.add(start);
+                        output.add(end);
+                    }
+                    i = end;
+                    break;
+                }
+            }
+        }
+        if (output.isEmpty()) return null;
+        else return output;
     }),
     _360(notes -> {
         ArrayList<Integer> output = new ArrayList<>();
         for (int i = 0; i < notes.size() - 4; i++) {
             int start = i;
             int end = start;
-            next:
             for (int k = 0; k + i < notes.size() - 4; k++) {
                 // Check same timing
-                long[] diffTimings = PatternHelper.getDiffTimings(notes.get(i + k), notes.get(i + k + 1), notes.get(i + k + 2), notes.get(i + k + 3));
-                for (int j = 0; j < diffTimings.length - 1; j++) {
-                    if (Math.abs(diffTimings[j] - diffTimings[j + 1]) > 15) {
-                        if (end != start) {
-                            output.add(start);
-                            output.add(end);
-                        }
-                        i = end;
-                        break next;
+                if (!PatternHelper.isSameTiming(1, notes.get(i + k), notes.get(i + k + 1), notes.get(i + k + 2), notes.get(i + k + 3))) {
+                    if (end != start) {
+                        output.add(start);
+                        output.add(end);
                     }
+                    i = end;
+                    break;
                 }
                 // Check 360 pattern (start from any note)
                 boolean circlePattern = PatternHelper.is360Pattern(notes.get(i + k), notes.get(i + k + 1), notes.get(i + k + 2), notes.get(i + k + 3));

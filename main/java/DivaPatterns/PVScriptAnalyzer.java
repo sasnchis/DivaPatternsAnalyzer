@@ -23,9 +23,14 @@ public class PVScriptAnalyzer {
         analyze();
         try {
             ArrayList<Integer> test = patterns.getPatterns().get(LINE);
-            int start = 457;
-            int end = 468;
+            int start = 187;
+            int end = 190;
             for (int i = start; i <= end; i++) {
+//                System.out.printf("Order for %s to %s: %s\n",
+//                        notes.get(i).getName(),
+//                        notes.get(i+1).getName(),
+//                        PatternHelper.getOrderOfNextNote(notes.get(i), notes.get(i+1))
+//                );
                 System.out.print(notes.get(i) + " in ");
                 System.out.println(new ScriptTime(notes.get(i).getTime()));
             }

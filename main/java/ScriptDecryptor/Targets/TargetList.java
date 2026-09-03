@@ -32,6 +32,14 @@ public class TargetList extends ArrayList<TargetInfo> {
         getLast().calcBPMPatternToNextAndMovement(null);
     }
 
+    public String getName() {
+        StringBuilder builder = new StringBuilder();
+        for (TargetInfo note : this) {
+            builder.append(note.getName()).append("\n");
+        }
+        return builder.toString();
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();

@@ -15,6 +15,7 @@ public class TargetInfo {
     private final long flyTime; // flying time
     private final long time; // pressed time
     private boolean isMultiNote = false;
+    private boolean isGimmick = false;
 
     public TargetInfo(long time, long flyTime, Target note) {
         this.flyTime = flyTime;
@@ -38,8 +39,8 @@ public class TargetInfo {
     public String getBpmPatternToNextAsFlyTimeAsString() {
         if (bpmPatternToNextAsFlyTime == -1) return "Change Fly Time";
         if (bpmPatternToNextAsFlyTime == 0) return "Last Note";
-        if (bpmPatternToNextAsFlyTime < 1) return "1/"+String.format("%.3f", bpmPatternToNextAsFlyTime);
-        else return "1/"+String.format("%.0f", bpmPatternToNextAsFlyTime);
+        if (bpmPatternToNextAsFlyTime < 1) return "1/" + String.format("%.3f", bpmPatternToNextAsFlyTime);
+        else return "1/" + String.format("%.0f", bpmPatternToNextAsFlyTime);
     }
 
     public double getBpmPatternToNextAsFlyTime() {
@@ -49,8 +50,8 @@ public class TargetInfo {
     public String getBpmPatternToNextAsPlacementString() {
         if (bpmPatternToNextAsPlacement == -1) return "Change Fly Time";
         if (bpmPatternToNextAsPlacement == 0) return "Last Note";
-        if (bpmPatternToNextAsPlacement < 1) return "1/"+String.format("%.3f", bpmPatternToNextAsPlacement);
-        else return "1/"+String.format("%.0f", bpmPatternToNextAsPlacement);
+        if (bpmPatternToNextAsPlacement < 1) return "1/" + String.format("%.3f", bpmPatternToNextAsPlacement);
+        else return "1/" + String.format("%.0f", bpmPatternToNextAsPlacement);
     }
 
     public double getBpmPatternToNextAsPlacement() {
@@ -71,6 +72,10 @@ public class TargetInfo {
 
     public boolean isMultiNote() {
         return isMultiNote;
+    }
+
+    public boolean isGimmick() {
+        return isGimmick;
     }
 
     public void addNote(Target note) {
@@ -115,21 +120,21 @@ public class TargetInfo {
             ArrayList<Double> tanDiff = new ArrayList<>();
             for (Target noteFirst : notes) {
                 for (Target noteSecond : target2.notes) {
-                    double diffX = noteFirst.posX-noteSecond.posX;
-                    double diffY = noteFirst.posY-noteSecond.posY;
+                    double diffX = noteFirst.posX - noteSecond.posX;
+                    double diffY = noteFirst.posY - noteSecond.posY;
                     double diffPif = Math.sqrt(Math.pow(diffX, 2) + Math.pow(diffY, 2));
                     placementDiff.add(diffPif); // /1000/3 -> to placement
-                    double tan = Math.toDegrees(Math.atan2(diffY, diffX))-90;
-                    if (tan < 0) tan+=360;
+                    double tan = Math.toDegrees(Math.atan2(diffY, diffX)) - 90;
+                    if (tan < 0) tan += 360;
                     tanDiff.add(tan);
                 }
             }
             int check = 0;
-            for (int i = 0; i < placementDiff.size()-1; i++) {
-                if (placementDiff.get(i) < placementDiff.get(i+1))
+            for (int i = 0; i < placementDiff.size() - 1; i++) {
+                if (placementDiff.get(i) < placementDiff.get(i + 1))
                     check = i;
             }
-            bpmPatternToNextAsPlacement = 192000/placementDiff.get(check);
+            bpmPatternToNextAsPlacement = 192000 / placementDiff.get(check);
             angleMovementToNextNote = tanDiff.get(check);
 
         } else {
@@ -144,11 +149,24 @@ public class TargetInfo {
         }
         if (flyTime == target2.flyTime) {
             long diff = target2.time - time;
-            double exact = 1500000.0/diff;
-            beatsPerMinuteAsNoteTimings = (double) Math.round(exact * 1000) /1000;
+            double exact = 1500000.0 / diff;
+            beatsPerMinuteAsNoteTimings = (double) Math.round(exact * 1000) / 1000;
         } else {
             beatsPerMinuteAsNoteTimings = -1;
         }
+    }
+
+    public String getName() {
+        StringBuilder builder = new StringBuilder();
+        if (isMultiNote) {
+            builder.append("MULTI(");
+            for (Target note : notes) {
+                builder.append(note).append(", ");
+            }
+            builder.delete(builder.length() - 2, builder.length());
+            builder.append(")");
+        } else builder.append(notes.getFirst());
+        return builder.toString();
     }
 
     @Override
@@ -163,7 +181,7 @@ public class TargetInfo {
             builder.append(")");
         } else builder.append(notes.getFirst());
         builder.append(String.format(" %s %.5f, %s %s",
-                "AngleToNext =", angleMovementToNextNote,"BPM as Timing =", getBPMAsNoteTimings()));
+                "AngleToNext =", angleMovementToNextNote, "BPM as Timing =", getBPMAsNoteTimings()));
 
         return builder.toString();
     }
